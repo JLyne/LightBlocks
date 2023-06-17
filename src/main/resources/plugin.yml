@@ -1,6 +1,6 @@
 name: LightBlocks
 version: @project.version@
-api-version: 1.17
+api-version: 1.19
 author: Jim (NotKatuen)
 main: uk.co.notnull.lightblocks.LightBlocks
 depend: [WorldGuard]
