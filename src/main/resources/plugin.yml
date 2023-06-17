@@ -1,0 +1,12 @@
+name: LightBlocks
+version: @project.version@
+api-version: 1.17
+author: Jim (NotKatuen)
+main: uk.co.notnull.lightblocks.LightBlocks
+depend: [WorldGuard]
+softdepend: [GriefPrevention]
+commands:
+  light:
+    permission: light.give
+    description: Gives you a light block of the specified level
+    usage: /light <level 0-15>
