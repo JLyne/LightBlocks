@@ -2,10 +2,14 @@ package uk.co.notnull.lightblocks;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Material;
+import org.bukkit.block.data.type.Light;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BlockDataMeta;
 import org.jetbrains.annotations.NotNull;
 
 public class LightCommand implements CommandExecutor {
@@ -42,12 +46,19 @@ public class LightCommand implements CommandExecutor {
 			return false;
 		}
 
-		plugin.getLogger().info("/give " + player.getName()
-						+ " minecraft:light{BlockStateTag: {level:\"" + lightLevel + "\"}} ");
+		ItemStack item = new ItemStack(Material.LIGHT, 1);
+		Light blockData = (Light) Material.LIGHT.createBlockData();
+		blockData.setLevel(lightLevel);
 
-		plugin.getServer().dispatchCommand(
-				plugin.getServer().getConsoleSender(), "give " + player.getName()
-						+ " minecraft:light{BlockStateTag: {level:\"" + lightLevel + "\"}} ");
+		BlockDataMeta meta = (BlockDataMeta) item.getItemMeta();
+		meta.setBlockData(blockData);
+		item.setItemMeta(meta);
+
+		if(!player.getInventory().addItem(item).isEmpty()) {
+			player.getWorld().dropItemNaturally(player.getLocation(), item);
+		}
+
+		player.sendMessage(Component.text("You have been given a Light block").color(NamedTextColor.GREEN));
 
 		return true;
 	}
