@@ -1,5 +1,7 @@
 package uk.co.notnull.lightblocks;
 
+import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -21,16 +23,21 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+@SuppressWarnings("UnstableApiUsage")
 public final class LightBlocks extends JavaPlugin implements Listener {
 	private GriefPreventionHandler griefPreventionHandler;
 	private WorldGuardHandler worldGuardHandler;
 
 	@Override
 	public void onEnable() {
-		getCommand("light").setExecutor(new LightCommand(this));
 		getServer().getPluginManager().registerEvents(this, this);
+
+		LifecycleEventManager<Plugin> manager = getLifecycleManager();
+        manager.registerEventHandler(LifecycleEvents.COMMANDS, event -> new LightCommand(event.registrar()));
 
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
 			for (Player player : Bukkit.getOnlinePlayers()) {
