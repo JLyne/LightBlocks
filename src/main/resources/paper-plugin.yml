@@ -1,0 +1,14 @@
+name: LightBlocks
+version: @project.version@
+api-version: '1.21'
+author: Jim
+main: uk.co.notnull.lightblocks.LightBlocks
+
+dependencies:
+  server:
+    WorldGuard:
+      load: BEFORE
+      required: true
+    GriefPrevention:
+      load: BEFORE
+      required: false
