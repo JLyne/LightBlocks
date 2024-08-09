@@ -19,6 +19,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.server.PluginDisableEvent;
+import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -46,23 +48,40 @@ public final class LightBlocks extends JavaPlugin implements Listener {
 				}
 			}
 		}, 0L, 20L);
-		
-		try {
-			worldGuardHandler = new WorldGuardHandler();
-		} catch(NoClassDefFoundError e) {
-			getLogger().warning("WorldGuard not found");
-		}
+	}
 
-		try {
-			griefPreventionHandler = new GriefPreventionHandler();
-		} catch(NoClassDefFoundError e) {
-			getLogger().warning("GriefPrevention not found");
+		@EventHandler
+	public void onPluginEnable(PluginEnableEvent event) {
+		switch(event.getPlugin().getName()) {
+			case "GriefPrevention":
+				getLogger().info("Initialising GriefPrevention handler");
+				griefPreventionHandler = new GriefPreventionHandler();
+				break;
+
+			case "WorldGuard":
+				getLogger().info("Initialising WorldGuard handler");
+				worldGuardHandler = new WorldGuardHandler();
+				break;
 		}
 	}
 
-	@Override
-	public void onDisable() {
-		// Plugin shutdown logic
+	@EventHandler
+	public void onPluginDisable(PluginDisableEvent event) {
+		switch(event.getPlugin().getName()) {
+			case "GriefPrevention":
+				if(griefPreventionHandler != null) {
+					getLogger().info("Disabling GriefPrevention handler");
+					griefPreventionHandler = null;
+				}
+				break;
+
+			case "WorldGuard":
+				if(worldGuardHandler != null) {
+					getLogger().info("Disabling WorldGuard handler");
+					worldGuardHandler = null;
+				}
+				break;
+		}
 	}
 
 	@EventHandler()

@@ -7,8 +7,8 @@ main: uk.co.notnull.lightblocks.LightBlocks
 dependencies:
   server:
     WorldGuard:
-      load: BEFORE
-      required: true
+      load: AFTER
+      required: false
     GriefPrevention:
-      load: BEFORE
+      load: AFTER
       required: false
