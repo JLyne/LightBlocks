@@ -1,7 +1,6 @@
 package uk.co.notnull.lightblocks;
 
 import com.mojang.brigadier.Command;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
 import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -11,15 +10,19 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockDataMeta;
 
+import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
+import static io.papermc.paper.command.brigadier.Commands.argument;
+import static io.papermc.paper.command.brigadier.Commands.literal;
+
 @SuppressWarnings("UnstableApiUsage")
 public final class LightCommand {
 	public LightCommand(Commands commands) {
 		commands.register(
-				Commands.literal("light")
+				literal("light")
 						.requires(source -> source.getSender() instanceof Player
 								&& source.getSender().hasPermission("light.give"))
 						.executes(ctx -> onGive((Player) ctx.getSource().getSender(), 15))
-						.then(Commands.argument("level", IntegerArgumentType.integer(0, 15))
+						.then(argument("level", integer(0, 15))
 									  .executes(ctx -> onGive((Player) ctx.getSource().getSender(),
 															  ctx.getArgument("level", Integer.class))))
 						.build(),
