@@ -13,3 +13,8 @@ dependencies:
     GriefPrevention:
       load: AFTER
       required: false
+
+permissions:
+  light.give:
+    description: Allows players to give themselves a light block
+    default: op
