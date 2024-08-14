@@ -125,13 +125,13 @@ public final class LightBlocks extends JavaPlugin implements Listener {
 			return;
 		}
 
-		if(!worldGuardHandler.checkPermission(block.getLocation(), event.getPlayer())) {
+		if(worldGuardHandler != null && !worldGuardHandler.checkPermission(block.getLocation(), event.getPlayer())) {
 			event.setUseInteractedBlock(Event.Result.DENY);
 			event.setUseItemInHand(Event.Result.DENY);
 			return;
 		}
 
-		if(!griefPreventionHandler.checkPermission(block.getLocation(), event.getPlayer(), event)) {
+		if(griefPreventionHandler != null && !griefPreventionHandler.checkPermission(block.getLocation(), event.getPlayer(), event)) {
 			event.setUseInteractedBlock(Event.Result.DENY);
 			event.setUseItemInHand(Event.Result.DENY);
 		}
