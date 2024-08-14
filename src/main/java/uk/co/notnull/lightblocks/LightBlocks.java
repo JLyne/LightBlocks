@@ -11,7 +11,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Light;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -43,7 +42,7 @@ public final class LightBlocks extends JavaPlugin implements Listener {
 
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
 			for (Player player : Bukkit.getOnlinePlayers()) {
-				if (player.getGameMode() != GameMode.CREATIVE && holdingLightBlockTool(player)) {
+				if (!player.getGameMode().equals(GameMode.CREATIVE) && holdingLightBlockTool(player)) {
 					highlightLightBlocks(player);
 				}
 			}
@@ -84,13 +83,13 @@ public final class LightBlocks extends JavaPlugin implements Listener {
 		}
 	}
 
-	@EventHandler()
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onLeftClick(PlayerInteractEvent event) {
 		if (event.getAction() != Action.LEFT_CLICK_BLOCK && event.getAction() != Action.LEFT_CLICK_AIR) {
 			return;
 		}
 
-		if (event.getPlayer().getGameMode() != GameMode.SURVIVAL) {
+		if (!event.getPlayer().getGameMode().equals(GameMode.SURVIVAL)) {
 			return;
 		}
 
@@ -113,8 +112,12 @@ public final class LightBlocks extends JavaPlugin implements Listener {
 		event.setCancelled(true);
 	}
 
-	@EventHandler()
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onRightClick(PlayerInteractEvent event) {
+		if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
+			return;
+		}
+
 		if (event.getAction() != Action.RIGHT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_AIR) {
 			return;
 		}
@@ -126,14 +129,11 @@ public final class LightBlocks extends JavaPlugin implements Listener {
 		}
 
 		if(worldGuardHandler != null && !worldGuardHandler.checkPermission(block.getLocation(), event.getPlayer())) {
-			event.setUseInteractedBlock(Event.Result.DENY);
-			event.setUseItemInHand(Event.Result.DENY);
 			return;
 		}
 
 		if(griefPreventionHandler != null && !griefPreventionHandler.checkPermission(block.getLocation(), event.getPlayer(), event)) {
-			event.setUseInteractedBlock(Event.Result.DENY);
-			event.setUseItemInHand(Event.Result.DENY);
+			return;
 		}
 
 		Light blockData = (Light) event.getClickedBlock().getBlockData();
@@ -142,18 +142,17 @@ public final class LightBlocks extends JavaPlugin implements Listener {
 		event.getClickedBlock().setBlockData(blockData);
 	}
 
-	@EventHandler(ignoreCancelled = true)
-	private void onBlockPlace(BlockPlaceEvent event) {
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	private void onBlockPlaced(BlockPlaceEvent event) {
 		Block placed = event.getBlockPlaced();
 
-		if (event.getPlayer().getGameMode() != GameMode.CREATIVE && placed.getType() == Material.LIGHT) {
-			event.getPlayer().spawnParticle(Particle.BLOCK_MARKER, placed.getLocation().add(0.5, 0.5, 0.5), 1, placed.getBlockData());
+		if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
+			return;
 		}
-	}
 
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-	private void onBlockPlaced(BlockPlaceEvent event) {
-		if (event.getPlayer().getGameMode() != GameMode.CREATIVE && event.getBlockReplacedState().getType() == Material.LIGHT) {
+		if (placed.getType() == Material.LIGHT) {
+			event.getPlayer().spawnParticle(Particle.BLOCK_MARKER, placed.getLocation().add(0.5, 0.5, 0.5), 1, placed.getBlockData());
+		} else if (event.getBlockReplacedState().getType() == Material.LIGHT) {
 			Location location = event.getBlock().getLocation();
 			location.getWorld().dropItemNaturally(location, new ItemStack(Material.LIGHT, 1));
 		}
