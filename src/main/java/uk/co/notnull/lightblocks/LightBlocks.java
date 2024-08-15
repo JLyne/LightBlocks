@@ -114,10 +114,6 @@ public final class LightBlocks extends JavaPlugin implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onRightClick(PlayerInteractEvent event) {
-		if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
-			return;
-		}
-
 		if (event.getAction() != Action.RIGHT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_AIR) {
 			return;
 		}
