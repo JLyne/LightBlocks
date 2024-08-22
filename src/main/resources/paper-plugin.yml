@@ -1,6 +1,6 @@
 name: LightBlocks
 version: @project.version@
-api-version: '1.21'
+api-version: '1.21.1'
 author: Jim (AnEnragedPigeon)
 description: QoL features for Light block use
 main: uk.co.notnull.lightblocks.LightBlocks
