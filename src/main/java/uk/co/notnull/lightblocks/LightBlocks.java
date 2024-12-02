@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("UnstableApiUsage")
 public final class LightBlocks extends JavaPlugin implements Listener {
@@ -37,7 +38,7 @@ public final class LightBlocks extends JavaPlugin implements Listener {
 	public void onEnable() {
 		getServer().getPluginManager().registerEvents(this, this);
 
-		LifecycleEventManager<Plugin> manager = getLifecycleManager();
+		LifecycleEventManager<@NotNull Plugin> manager = getLifecycleManager();
         manager.registerEventHandler(LifecycleEvents.COMMANDS, event -> new LightCommand(event.registrar()));
 
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
