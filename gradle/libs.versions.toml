@@ -1,8 +1,8 @@
 [versions]
-pluginYmlPaper = "0.6.0"
+pluginYmlPaper = "0.7.1"
 paperApi = "1.21.4-R0.1-SNAPSHOT"
 griefPrevention = "16.18.1"
-worldguard = "7.0.13-SNAPSHOT"
+worldguard = "7.0.13"
 
 [libraries]
 paperApi = { group = "io.papermc.paper", name = "paper-api", version.ref = "paperApi" }
@@ -10,4 +10,4 @@ griefPrevention = { group = "com.github.TechFortress", name = "GriefPrevention",
 worldguard =  { group = "com.sk89q.worldguard", name = "worldguard-bukkit", version.ref  = "worldguard" }
 
 [plugins]
-pluginYmlPaper = { id = "net.minecrell.plugin-yml.paper", version.ref = "pluginYmlPaper" }
+pluginYmlPaper = { id = "de.eldoria.plugin-yml.paper", version.ref = "pluginYmlPaper" }
