@@ -1,11 +1,15 @@
 package uk.co.notnull.lightblocks;
 
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.PotionContents;
+import io.papermc.paper.event.server.ServerResourcesReloadedEvent;
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -25,14 +29,19 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.inventory.RecipeChoice;
+import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.recipe.CraftingBookCategory;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("UnstableApiUsage")
 public final class LightBlocks extends JavaPlugin implements Listener {
 	private GriefPreventionHandler griefPreventionHandler;
 	private WorldGuardHandler worldGuardHandler;
+	public final NamespacedKey key = new NamespacedKey(this, "light_block");
 
 	@Override
 	public void onEnable() {
@@ -40,6 +49,8 @@ public final class LightBlocks extends JavaPlugin implements Listener {
 
 		LifecycleEventManager<@NotNull Plugin> manager = getLifecycleManager();
         manager.registerEventHandler(LifecycleEvents.COMMANDS, event -> new LightCommand(event.registrar()));
+
+		initRecipe();
 
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
 			for (Player player : Bukkit.getOnlinePlayers()) {
@@ -50,7 +61,13 @@ public final class LightBlocks extends JavaPlugin implements Listener {
 		}, 0L, 20L);
 	}
 
-		@EventHandler
+	public void onDisable() {
+		if(Bukkit.getRecipe(key) != null) {
+			Bukkit.removeRecipe(key);
+		}
+	}
+
+	@EventHandler
 	public void onPluginEnable(PluginEnableEvent event) {
 		switch(event.getPlugin().getName()) {
 			case "GriefPrevention":
@@ -82,6 +99,11 @@ public final class LightBlocks extends JavaPlugin implements Listener {
 				}
 				break;
 		}
+	}
+
+	@EventHandler
+	public void onServerResourcesReloaded(ServerResourcesReloadedEvent event) {
+		initRecipe();
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -153,6 +175,30 @@ public final class LightBlocks extends JavaPlugin implements Listener {
 			Location location = event.getBlock().getLocation();
 			location.getWorld().dropItemNaturally(location, new ItemStack(Material.LIGHT, 1));
 		}
+	}
+
+	private void initRecipe() {
+		if(Bukkit.getRecipe(key) != null) {
+			Bukkit.removeRecipe(key);
+		}
+
+		ShapedRecipe recipe = new ShapedRecipe(key, new ItemStack(Material.LIGHT, 8));
+		recipe.setCategory(CraftingBookCategory.BUILDING);
+
+		recipe.shape("###", "#I#", "###");
+		recipe.setIngredient('#', new ItemStack(Material.GLOWSTONE, 1));
+
+		ItemStack potion = new ItemStack(Material.SPLASH_POTION, 1);
+		potion.setData(DataComponentTypes.POTION_CONTENTS, PotionContents.potionContents()
+				.potion(PotionType.INVISIBILITY).build());
+
+		ItemStack potion2 = new ItemStack(Material.SPLASH_POTION, 1);
+		potion2.setData(DataComponentTypes.POTION_CONTENTS, PotionContents.potionContents()
+				.potion(PotionType.LONG_INVISIBILITY).build());
+
+		recipe.setIngredient('I', new RecipeChoice.ExactChoice(potion, potion2));
+
+		Bukkit.addRecipe(recipe);
 	}
 
 	private List<Location> getLightBlocksAroundPlayer(Player player) {
