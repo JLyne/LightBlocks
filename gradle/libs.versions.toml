@@ -1,8 +1,8 @@
 [versions]
 pluginYmlPaper = "0.7.1"
 paperApi = "1.21.7-R0.1-SNAPSHOT"
-griefPrevention = "16.18.1"
-worldguard = "7.0.13"
+griefPrevention = "17.0.0"
+worldguard = "7.0.14"
 
 [libraries]
 paperApi = { group = "io.papermc.paper", name = "paper-api", version.ref = "paperApi" }
