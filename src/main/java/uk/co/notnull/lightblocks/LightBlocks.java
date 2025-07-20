@@ -129,8 +129,8 @@ public final class LightBlocks extends JavaPlugin implements Listener {
 		ItemStack item = event.getItem();
 		Location location = block.getLocation();
 
-		block.breakNaturally(item != null ? item : new ItemStack(Material.LIGHT, 1), true);
-		location.getWorld().dropItemNaturally(location, new ItemStack(Material.LIGHT, 1));
+		block.breakNaturally(item != null ? item : ItemStack.of(Material.LIGHT), true);
+		location.getWorld().dropItemNaturally(location, ItemStack.of(Material.LIGHT));
 
 		event.setCancelled(true);
 	}
@@ -173,7 +173,7 @@ public final class LightBlocks extends JavaPlugin implements Listener {
 			event.getPlayer().spawnParticle(Particle.BLOCK_MARKER, placed.getLocation().add(0.5, 0.5, 0.5), 1, placed.getBlockData());
 		} else if (event.getBlockReplacedState().getType() == Material.LIGHT) {
 			Location location = event.getBlock().getLocation();
-			location.getWorld().dropItemNaturally(location, new ItemStack(Material.LIGHT, 1));
+			location.getWorld().dropItemNaturally(location, ItemStack.of(Material.LIGHT));
 		}
 	}
 
@@ -182,17 +182,17 @@ public final class LightBlocks extends JavaPlugin implements Listener {
 			Bukkit.removeRecipe(key);
 		}
 
-		ShapedRecipe recipe = new ShapedRecipe(key, new ItemStack(Material.LIGHT, 8));
+		ShapedRecipe recipe = new ShapedRecipe(key, ItemStack.of(Material.LIGHT, 8));
 		recipe.setCategory(CraftingBookCategory.BUILDING);
 
 		recipe.shape("###", "#I#", "###");
-		recipe.setIngredient('#', new ItemStack(Material.GLOWSTONE, 1));
+		recipe.setIngredient('#', ItemStack.of(Material.GLOWSTONE));
 
-		ItemStack potion = new ItemStack(Material.SPLASH_POTION, 1);
+		ItemStack potion = ItemStack.of(Material.SPLASH_POTION);
 		potion.setData(DataComponentTypes.POTION_CONTENTS, PotionContents.potionContents()
 				.potion(PotionType.INVISIBILITY).build());
 
-		ItemStack potion2 = new ItemStack(Material.SPLASH_POTION, 1);
+		ItemStack potion2 = ItemStack.of(Material.SPLASH_POTION);
 		potion2.setData(DataComponentTypes.POTION_CONTENTS, PotionContents.potionContents()
 				.potion(PotionType.LONG_INVISIBILITY).build());
 

@@ -30,7 +30,7 @@ public final class LightCommand {
 	}
 
 	public int onGive(Player sender, int level) {
-		ItemStack item = new ItemStack(Material.LIGHT, 1);
+		ItemStack item = ItemStack.of(Material.LIGHT);
 		Light blockData = (Light) Material.LIGHT.createBlockData();
 		blockData.setLevel(level);
 
