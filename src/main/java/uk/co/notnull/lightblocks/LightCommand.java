@@ -14,7 +14,6 @@ import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 import static io.papermc.paper.command.brigadier.Commands.argument;
 import static io.papermc.paper.command.brigadier.Commands.literal;
 
-@SuppressWarnings("UnstableApiUsage")
 public final class LightCommand {
 	public LightCommand(Commands commands) {
 		commands.register(
