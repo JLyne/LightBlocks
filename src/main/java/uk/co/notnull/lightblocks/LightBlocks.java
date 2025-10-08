@@ -21,6 +21,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
@@ -172,6 +173,20 @@ public final class LightBlocks extends JavaPlugin implements Listener {
 		if (placed.getType() == Material.LIGHT) {
 			event.getPlayer().spawnParticle(Particle.BLOCK_MARKER, placed.getLocation().add(0.5, 0.5, 0.5), 1, placed.getBlockData());
 		} else if (event.getBlockReplacedState().getType() == Material.LIGHT) {
+			Location location = event.getBlock().getLocation();
+			location.getWorld().dropItemNaturally(location, ItemStack.of(Material.LIGHT));
+		}
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	private void onEntityChangeBlock(EntityChangeBlockEvent event) {
+		Block old = event.getBlock();
+
+		if (old.getType() != Material.LIGHT) {
+			return;
+		}
+
+		if (event.getTo() != Material.LIGHT) {
 			Location location = event.getBlock().getLocation();
 			location.getWorld().dropItemNaturally(location, ItemStack.of(Material.LIGHT));
 		}
