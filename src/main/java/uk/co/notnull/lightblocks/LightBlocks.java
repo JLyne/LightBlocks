@@ -8,7 +8,6 @@ import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.World;
@@ -30,6 +29,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.inventory.ItemType;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
@@ -119,7 +119,7 @@ public final class LightBlocks extends JavaPlugin implements Listener {
 
 		Block block = event.getClickedBlock();
 
-		if (block == null || block.getType() != Material.LIGHT) {
+		if (block == null || block.getType().asItemType() != ItemType.LIGHT) {
 			return;
 		}
 
@@ -130,8 +130,8 @@ public final class LightBlocks extends JavaPlugin implements Listener {
 		ItemStack item = event.getItem();
 		Location location = block.getLocation();
 
-		block.breakNaturally(item != null ? item : ItemStack.of(Material.LIGHT), true);
-		location.getWorld().dropItemNaturally(location, ItemStack.of(Material.LIGHT));
+		block.breakNaturally(item != null ? item : ItemType.LIGHT.createItemStack(), true);
+		location.getWorld().dropItemNaturally(location, ItemType.LIGHT.createItemStack());
 
 		event.setCancelled(true);
 	}
@@ -144,7 +144,7 @@ public final class LightBlocks extends JavaPlugin implements Listener {
 
 		Block block = event.getClickedBlock();
 
-		if (block == null || block.getType() != Material.LIGHT) {
+		if (block == null || block.getType().asItemType() != ItemType.LIGHT) {
 			return;
 		}
 
@@ -170,11 +170,11 @@ public final class LightBlocks extends JavaPlugin implements Listener {
 			return;
 		}
 
-		if (placed.getType() == Material.LIGHT) {
+		if (placed.getType().asItemType() == ItemType.LIGHT) {
 			event.getPlayer().spawnParticle(Particle.BLOCK_MARKER, placed.getLocation().add(0.5, 0.5, 0.5), 1, placed.getBlockData());
-		} else if (event.getBlockReplacedState().getType() == Material.LIGHT) {
+		} else if (event.getBlockReplacedState().getType().asItemType() == ItemType.LIGHT) {
 			Location location = event.getBlock().getLocation();
-			location.getWorld().dropItemNaturally(location, ItemStack.of(Material.LIGHT));
+			location.getWorld().dropItemNaturally(location, ItemType.LIGHT.createItemStack());
 		}
 	}
 
@@ -182,13 +182,13 @@ public final class LightBlocks extends JavaPlugin implements Listener {
 	private void onEntityChangeBlock(EntityChangeBlockEvent event) {
 		Block old = event.getBlock();
 
-		if (old.getType() != Material.LIGHT) {
+		if (old.getType().asItemType() != ItemType.LIGHT) {
 			return;
 		}
 
-		if (event.getTo() != Material.LIGHT) {
+		if (event.getTo().asItemType() != ItemType.LIGHT) {
 			Location location = event.getBlock().getLocation();
-			location.getWorld().dropItemNaturally(location, ItemStack.of(Material.LIGHT));
+			location.getWorld().dropItemNaturally(location, ItemType.LIGHT.createItemStack());
 		}
 	}
 
@@ -197,17 +197,17 @@ public final class LightBlocks extends JavaPlugin implements Listener {
 			Bukkit.removeRecipe(key);
 		}
 
-		ShapedRecipe recipe = new ShapedRecipe(key, ItemStack.of(Material.LIGHT, 8));
+		ShapedRecipe recipe = new ShapedRecipe(key, ItemType.LIGHT.createItemStack(8));
 		recipe.setCategory(CraftingBookCategory.BUILDING);
 
 		recipe.shape("###", "#I#", "###");
-		recipe.setIngredient('#', ItemStack.of(Material.GLOWSTONE));
+		recipe.setIngredient('#', ItemType.GLOWSTONE.createItemStack());
 
-		ItemStack potion = ItemStack.of(Material.SPLASH_POTION);
+		ItemStack potion = ItemType.SPLASH_POTION.createItemStack();
 		potion.setData(DataComponentTypes.POTION_CONTENTS, PotionContents.potionContents()
 				.potion(PotionType.INVISIBILITY).build());
 
-		ItemStack potion2 = ItemStack.of(Material.SPLASH_POTION);
+		ItemStack potion2 = ItemType.SPLASH_POTION.createItemStack();
 		potion2.setData(DataComponentTypes.POTION_CONTENTS, PotionContents.potionContents()
 				.potion(PotionType.LONG_INVISIBILITY).build());
 
@@ -233,7 +233,7 @@ public final class LightBlocks extends JavaPlugin implements Listener {
 				for (int y = minY; y <= maxY; y++) {
 					Block block = world.getBlockAt(x, y, z);
 
-					if (block.getType() == Material.LIGHT) {
+					if (block.getType().asItemType() == ItemType.LIGHT) {
 						locations.add(block.getLocation().add(0.5, 0.5, 0.5));
 					}
 				}
@@ -257,7 +257,7 @@ public final class LightBlocks extends JavaPlugin implements Listener {
 	}
 
 	private boolean holdingLightBlockTool(Player player) {
-		return player.getEquipment().getItemInMainHand().getType() == Material.LIGHT
-				|| player.getEquipment().getItemInOffHand().getType() == Material.LIGHT;
+		return player.getEquipment().getItemInMainHand().getType().asItemType() == ItemType.LIGHT
+				|| player.getEquipment().getItemInOffHand().getType().asItemType() == ItemType.LIGHT;
 	}
 }

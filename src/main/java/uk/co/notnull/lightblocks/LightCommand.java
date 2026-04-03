@@ -4,10 +4,11 @@ import com.mojang.brigadier.Command;
 import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Material;
+import org.bukkit.block.BlockType;
 import org.bukkit.block.data.type.Light;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.inventory.meta.BlockDataMeta;
 
 import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
@@ -28,9 +29,10 @@ public final class LightCommand {
 				"Gives you a light block of the specified level");
 	}
 
+	@SuppressWarnings("UnstableApiUsage")
 	public int onGive(Player sender, int level) {
-		ItemStack item = ItemStack.of(Material.LIGHT);
-		Light blockData = (Light) Material.LIGHT.createBlockData();
+		ItemStack item = ItemType.LIGHT.createItemStack();
+		Light blockData = BlockType.LIGHT.createBlockData();
 		blockData.setLevel(level);
 
 		BlockDataMeta meta = (BlockDataMeta) item.getItemMeta();
