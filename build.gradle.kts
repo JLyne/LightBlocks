@@ -37,7 +37,7 @@ dependencies {
 
 paper {
     main = "uk.co.notnull.lightblocks.LightBlocks"
-    apiVersion = libs.versions.paperApi.get().replace(Regex("\\-R\\d.\\d-SNAPSHOT"), "")
+    apiVersion = libs.versions.paperApi.get().replace(".build.+", "")
     authors = listOf("Jim (AnEnragedPigeon)")
     description = "QoL features for Light block use"
 
