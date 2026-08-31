@@ -26,11 +26,8 @@ import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 
 import org.bukkit.inventory.ItemType;
 import org.bukkit.inventory.RecipeChoice;
@@ -214,20 +211,11 @@ public final class LightBlocks extends JavaPlugin implements Listener {
 		potion2.setData(DataComponentTypes.POTION_CONTENTS, PotionContents.potionContents()
 				.potion(PotionType.LONG_INVISIBILITY).build());
 
-		RecipeChoice choice;
-		// Use Purpur's setPredicate when possible to exclude custom items from this and other plugins
-		// in crafting recipes
-		try {
-			choice = new RecipeChoice.ExactChoice(potion, potion2);
-			Method setPredicate = choice.getClass().getMethod("setPredicate", Predicate.class);
-			Predicate<ItemStack> predicate = (ItemStack item) ->
-					(item.isSimilar(potion) || item.isSimilar(potion2)) && item.getPersistentDataContainer().isEmpty();
-			setPredicate.invoke(choice, predicate);
-		} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-			choice = new RecipeChoice.ExactChoice(potion, potion2);
-		}
-
-		recipe.setIngredient('I', choice);
+		// Exclude items with custom data which likely belong to other plugins
+		recipe.setIngredient('I', RecipeChoice.predicateChoice(
+				(ItemStack i) -> (i.isSimilar(potion) || i.isSimilar(potion2))
+						&& i.getPersistentDataContainer().isEmpty(),
+				potion));
 		Bukkit.addRecipe(recipe);
 	}
 
